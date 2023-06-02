@@ -1,0 +1,7 @@
+.*
+!.gitignore
+/Lesson_5.结合OpenCV实现视频播放器/*.png
+*.mp4
+*.mp3
+__pycache__
+!Lesson_11.MultimediaPlayer/icon.png

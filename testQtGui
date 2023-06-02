@@ -1,0 +1,14 @@
+
+QLabel#label{
+    font-size: 15px;
+    color: rgb(210,210,200);
+    background-color: rgb(10,0,0);
+
+}
+QPushButton:hover#pushButton{
+    color: red;
+}
+QPushButton:pressed#pushButton{
+    background-color: white;
+    border-style: dotted;
+}
