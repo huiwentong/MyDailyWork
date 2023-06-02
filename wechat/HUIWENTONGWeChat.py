@@ -8,7 +8,7 @@ import time
 import datetime
 import random
 import win32gui
-from test.wechatAuto_ui import Ui_MainWindow
+from wechatAuto_ui import Ui_MainWindow
 from pynput.mouse import Button, Controller as mC
 from PySide2.QtWidgets import QApplication, QMainWindow
 from PySide2 import QtWidgets, QtCore, QtGui
