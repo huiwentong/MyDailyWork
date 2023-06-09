@@ -15,7 +15,7 @@ from PySide2 import QtWidgets, QtCore, QtGui
 import traceback
 from multiprocessing import Process, Manager
 import ctypes
-
+from qt_material import apply_stylesheet
 # 获取当前微信客户端
 wx = WeChat()
 

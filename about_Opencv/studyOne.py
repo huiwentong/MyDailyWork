@@ -4,7 +4,7 @@ import numpy as np
 
 if __name__ == "__main__":
 
-    cap = cv.VideoCapture('V_TEST3.mp4')
+    cap = cv.VideoCapture('V_TEST1.mp4')
 
     img = cv.imread('color.jpg')
     cap.set(cv.CAP_PROP_POS_FRAMES, 100)

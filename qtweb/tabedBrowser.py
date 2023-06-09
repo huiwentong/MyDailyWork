@@ -5,7 +5,7 @@ from PySide2.QtGui import *
 from threading import Thread
 from pynput.keyboard import Key, Controller, Listener
 import time
-
+from qt_material import apply_stylesheet
 
 def on_press(key):
     print(key)
@@ -158,6 +158,7 @@ if __name__ == "__main__":
 
     app = QApplication(sys.argv)
     main = MainWindow()
+    apply_stylesheet(app, theme='dark_teal.xml')
     main.show()
     t = Thread(target=threadTest)
     t.setDaemon(True)
