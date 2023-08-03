@@ -1,5 +1,7 @@
+.vscode
 .idea
 *.log
 *.mp4
 *.pyc
 *.exr
+*.mp3

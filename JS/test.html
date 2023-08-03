@@ -1,4 +1,5 @@
-<html>
+<!DOCTYPE html>
+<html lang="en">
 <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -10,10 +11,16 @@
         var a = 54;
         let b = 100;
         function main(a, b){
-            return a + b
+            return a + b;
         }
-        document.write(main(a, b))
-        console.log("aloha! this is my tiny test!")
-    </script>
+        let userdata = prompt('请输入一个数字')
+        let i = 0
+        while(i < 5){
+            document.write(main(a, b)+"<br>");
+            i++;
+        }
+        console.log("aloha! this is my tiny test!");
+        console.log(`在这里，用户输入了${userdata}`);
+        </script>
 </body>
 </html>
