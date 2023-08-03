@@ -9,25 +9,24 @@ db = pymysql.connect(
     )
 
 cursor = db.cursor() #创建游标对象
-
 try:
 
     sql = 'show databases'
     cursor.execute(sql)
-    print('未创建数据库前：',cursor.fetchall()) #获取创建数据库前全部数据库
+    print('未创建数据库前：', cursor.fetchall()) #获取创建数据库前全部数据库
 
     dbname = 'justtest'
     sql = 'create database if not exists %s'%(dbname) #创建数据库
     cursor.execute(sql)
     sql = 'show databases'
     cursor.execute(sql)
-    print('创建新的数据库后：',cursor.fetchall()) #获取创建数据库后全部数据库
+    print('创建新的数据库后：', cursor.fetchall()) #获取创建数据库后全部数据库
 
     sql = 'drop database if exists %s'%(dbname) #删除数据库
     cursor.execute(sql)
     sql = 'show databases'
     cursor.execute(sql)
-    print('删除新的数据库后：',cursor.fetchall()) #获取删除数据库后全部数据库
+    print('删除新的数据库后：', cursor.fetchall()) #获取删除数据库后全部数据库
 
 except Exception as e:
     print(e)
