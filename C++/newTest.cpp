@@ -1,4 +1,5 @@
 #include <iostream>
+#include <string>
 using namespace std;
 
 class Box
@@ -10,21 +11,28 @@ class Box
         double get(void);
         void set(const double len, const double hei, const double wi);
         friend void printBox(const Box& b);
+        Box()=default; //默认构造函数就不需要再定义了
         Box(const Box& b);
-        Box(double l, double w, double h);
-        ~Box(void);
+        Box(double l, double w, double h):length(l), width(w), height(h){cout << "另一种赋值方式" << endl;}
+        ~Box();
         Box operator+(const Box& b);
         friend ostream &operator<<(const ostream& cout ,const Box& b);
     private:
-        char* secret = "我是的大大啊";
+        string secret = "我是的大大啊";
 
+};
+class TinyBox: public Box{
+    public:
+        TinyBox(double l);
+    private:
+        Box g;
 };
 
 int main() {
     /* int var[10] = {10,2,10,5,50,60,80,70,50,2};
     short int t = 1000000000;
     long int tt = 1000000000; */
-    system("chcp 65001");
+    system("chcp 65001"); 
     //枚举类
     enum week {MON=5, TU, WEN, THUR, FRI, SAT, SUN};
     enum week today = WEN;
@@ -36,22 +44,26 @@ int main() {
     Box a(5,5,5);
     Box b = a;
     Box c(a);
+    TinyBox d(3);
     cout << b.get() << endl;
     cout << today << endl;
     cout << cloth << endl;
+    cout << d.get() << endl;
     printBox(b);
     system("pause");
     return 0;
 }
 
 
-
-Box::Box(double l=1.0, double w=2.0, double h=3.0){
-    cout << "调用了构造函数" << endl;
+TinyBox::TinyBox(double l){
+    cout << "调用了基类的默认构造函数" <<endl;
     length = l;
-    width = w;
-    height = h;
+    height = l;
+    width = l;
 }
+
+
+
 Box::Box(const Box& b){
     cout << "调用拷贝构造函数啦哈哈哈" << endl;
     length = b.length;
