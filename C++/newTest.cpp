@@ -29,9 +29,9 @@ class TinyBox: public Box{
 };
 
 int main() {
-    /* int var[10] = {10,2,10,5,50,60,80,70,50,2};
-    short int t = 1000000000;
-    long int tt = 1000000000; */
+    int var[10] = {10,2,10,5,50,60,80,70,50,2};
+    short int t = 1000000000; //无法正常显示，因为超出了变量定义的大小
+    long int tt = 1000000000; //正常显示
     system("chcp 65001"); 
     //枚举类
     enum week {MON=5, TU, WEN, THUR, FRI, SAT, SUN};
