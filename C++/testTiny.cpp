@@ -1,5 +1,5 @@
 #include <iostream>
-#include "testTiny.h"
+// #include "testTiny.h"
 #include "testTiny.h"//如果头文件没有 #ifndef 的声明，则会报重定义的错误
 #define STR(x)  #x //相当于输出“x”
 #define MACRO_UNWARP(x) STR(X) //不管MACRO_UNWARP()中的x是啥，都会转换成STR(X)
