@@ -18,6 +18,10 @@ function Add_png_to_comp(map_item, parent) {
     this.width = map_item[0].width;
     this.height = map_item[0].height;
     this.name = map_item[0].name.replace('.png', '');
+    if(this.width<4)this.width = 5;
+    if(this.height<4)this.height = 5;
+    if(this.width > 30000.0)throw "宽度值大于30000,太大了";
+    if(this.height >30000.0)throw "高度值大于30000,太大了";
     this.comp = parent.items.addComp(this.name, this.width, this.height, 1.0, 0.04, 25);
     this.upLayer = this.comp.layers.add(map_item[0]);
     this.downLayer = this.comp.layers.add(map_item[1]);
