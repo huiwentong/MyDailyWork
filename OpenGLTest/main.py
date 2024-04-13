@@ -1,3 +1,13 @@
+"""
+这个工程使用的python3.11版本（太高了）
+因为这个版本与pyside2不兼容，所以只能使用pyside6
+pyside6与pyside2中有一些区别（但不大）
+其中比较多的就是将很多不是很常用的函数和类进行了重新归类和放置
+就好比接下来这段代码中的OpenGL相关的所有模块，都进行的移位
+而且在Qt6中，对于OpenGL的内存管理机制进行了更严格的升级
+所以曾经对于Qt5中的一些不太安全的做法，在Qt6中会直接报错
+
+"""
 import numpy as np
 import pyrr.matrix44
 from PySide6 import QtCore, QtWidgets, QtGui, QtOpenGLWidgets
@@ -145,6 +155,8 @@ class open_widget(QtOpenGLWidgets.QOpenGLWidget):
 
         # Qt的材质绑定方法
         self.texture.bind()
+        # 比较恶心的一点是在Qt6中不允许出现glDrawElements(*,*,*,None)这样的参数配置
+        # 如果使用Qt6作为主体GUI框架，那么必须使用glDrawElements(*,*,*,indices)的这种形式才会将我们的顶点们正常的绘制出来
         glDrawElements(GL_TRIANGLES, len(self.indices), GL_UNSIGNED_INT, self.indices)
         # glDrawArrays(GL_TRIANGLES, 0, len(self.vertices))
 
