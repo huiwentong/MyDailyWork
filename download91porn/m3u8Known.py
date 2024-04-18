@@ -1,14 +1,13 @@
 import requests
 import pprint
-from Crypto.Cipher import AES
+
 if __name__ == "__main__":
-    baseUrl = r"https://sf07.aztc11.cn/video/2023-06-14/15/1668883146995150848/"
-    url = r"https://sf07.aztc11.cn/video/2023-06-14/15/1668883146995150848/3559ddad496443929e6514135409b4d3.m3u8"
+    baseUrl = "https://video.twimg.com//amplify_video/1749658834992566272/pl/avc1/720x1280/mp4a/128000/aXyqmjiZSg3Ec1mS.m3u8?container=cmaf"
     session = requests.session()
 
-    session.headers = {
-        r"Referer": r"https://cgg01.com/?channelId=2",
-        r"User-Agent": r"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/115.0.0.0 Safari/537.36 Edg/115.0.1901.183",
+    headers = {
+        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36 Edg/122.0.0.0",
+        "Referer": "https://twitter.com/lianmeng798/status/1770089256867844204"
     }
-    content = session.get(url).content.decode()
-    key_url =
+    content = requests.get(baseUrl, headers=headers).content.decode()
+    print(content)
