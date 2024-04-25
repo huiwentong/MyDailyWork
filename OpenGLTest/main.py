@@ -155,8 +155,8 @@ class open_widget(QtOpenGLWidgets.QOpenGLWidget):
 
         # Qt的材质绑定方法
         self.texture.bind()
-        # 比较恶心的一点是在Qt6中不允许出现glDrawElements(*,*,*,None)这样的参数配置
-        # 如果使用Qt6作为主体GUI框架，那么必须使用glDrawElements(*,*,*,indices)的这种形式才会将我们的顶点们正常的绘制出来
+        # 不知道为什么有的时候glDrawElements(*,*,*,None)这样的参数配置就不行
+        # 有的时候glDrawElements(*,*,*,indices)的这种形式才会将我们的顶点们正常的绘制出来
         glDrawElements(GL_TRIANGLES, len(self.indices), GL_UNSIGNED_INT, self.indices)
         # glDrawArrays(GL_TRIANGLES, 0, len(self.vertices))
 

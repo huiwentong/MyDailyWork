@@ -28,29 +28,31 @@ import ctypes
 from OpenGL.GL.shaders import compileShader, compileProgram
 
 float_size = ctypes.sizeof(ctypes.c_float)
-
-
+def mk_tuple(x, y):
+    _l = []
+    for i in range(y):
+      _l.append(x)
+    return _l
 class open_widget(QtOpenGLWidgets.QOpenGLWidget):
     def __init__(self, parent=None):
         super(open_widget, self).__init__(parent=parent)
         self.VAO = None
         self.VBO = None
         self.EBO = None
+        self.model = None
         self.set_model = pyrr.matrix44.create_identity(dtype=np.float32)
+        scale = pyrr.matrix44.create_from_scale(mk_tuple(0.01, 3), dtype=np.float32)
+        self.set_model = pyrr.matrix44.multiply(self.set_model, scale)
         self.resize(500, 500)
+        self.zoom = 2
         self.setWindowTitle('open_widget')
+        # self.timmer = QtCore.QTimer()
+        # self.timmer.timeout.connect(self.update)
+        # self.timmer.start(1000/60)
 
     def initializeGL(self):
         glEnable(GL_BLEND)
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA)
-
-
-        model = analysis_obj.Model.make_model("test.obj")
-        self.vertices = model.vertex
-        self.normals = model.normal
-        self.tex_coords = model.tex_coords
-        self.indices = model.indices
-
 
         with open("vertex2.glsl", "r") as f:
             shader_ver_source = f.read()
@@ -67,7 +69,6 @@ class open_widget(QtOpenGLWidgets.QOpenGLWidget):
         self.program.bind()
         self.shaderProgram = self.program.programId()
 
-
         self.texture = QOpenGLTexture(QOpenGLTexture.Target.Target2D)
         self.texture.create()
         self.texture.setData(QtGui.QImage("test.jpg"))
@@ -75,7 +76,8 @@ class open_widget(QtOpenGLWidgets.QOpenGLWidget):
         self.texture.setMagnificationFilter(QOpenGLTexture.Linear)
         self.texture.setWrapMode(QOpenGLTexture.ClampToEdge)
 
-        self.make_buffer()
+        self.model = analysis_obj.Model.make_model("test.obj")
+        self.model.gen_buffer(self.program)
 
         print("initialized")
         glEnable(GL_DEPTH_TEST)
@@ -87,78 +89,41 @@ class open_widget(QtOpenGLWidgets.QOpenGLWidget):
         glViewport(0, 0, w, h)
         self.set_project = QtGui.QMatrix4x4()
         self.set_project.setToIdentity()
-        self.set_project.perspective(45.0, float(w) / float(h), 0.01, 100)
-        # 如果是要在这里直接改写shader的uniform属性的话，我们需要前面重新绑定一下shaderprogram，太麻烦了，所以我们在这记录一下即可，等到paintGL的时候我们再统一的
-        # 对shader进行更改
+        self.set_project.perspective(45.0, float(w) / float(h), 0.01, 10000)
+        self.set_project = pyrr.matrix44.create_perspective_projection_matrix(45.0, float(w) / float(h), 0.01, 10000, dtype=np.float32)
 
     def paintGL(self):
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)
-
-        glBindVertexArray(self.VAO)
+        glBindVertexArray(self.model.VAO)
 
         self.program.bind()
-        set_view = pyrr.matrix44.create_look_at((0, 0, 2), (0, 0, 0), (0, 1, 0), dtype=np.float32)
-        view = glGetUniformLocation(self.shaderProgram, "uV")
-        glUniformMatrix4fv(view, 1, GL_FALSE, set_view)
 
-        model = glGetUniformLocation(self.shaderProgram, "uMo")
-        glUniformMatrix4fv(model, 1, GL_FALSE, self.set_model)
+        set_view = pyrr.matrix44.create_look_at((0, 0, self.zoom), (0, 0, 0), (0, 1, 0), dtype=np.float32)
 
-        projection = glGetUniformLocation(self.shaderProgram, "uPer")
-        self.program.setUniformValue(projection, self.set_project)
+        set_mvp = pyrr.matrix44.multiply(self.set_model, pyrr.matrix44.create_identity(dtype=np.float32))
+        set_mvp = pyrr.matrix44.multiply(set_mvp, set_view)
+        set_mvp = pyrr.matrix44.multiply(set_mvp, self.set_project)
 
-        self.VBO.bind()
-        self.program.enableAttributeArray(0)
-        self.program.setAttributeBuffer(0, GL_FLOAT, 0, 3, 8 * float_size)
 
-        self.program.enableAttributeArray(1)
-        self.program.setAttributeBuffer(1, GL_FLOAT, 3 * float_size, 3, 8 * float_size)
+        uMVP = glGetUniformLocation(self.shaderProgram, "uMVP")
+        glUniformMatrix4fv(uMVP, 1, GL_FALSE, set_mvp)
 
         self.texture.bind()
-        glDrawElements(GL_TRIANGLES, len(self.indices), GL_UNSIGNED_INT, self.indices)
-    def make_buffer(self):
-        if not self.VAO:
-            self.VAO = glGenVertexArrays(1)
-            glBindVertexArray(self.VAO)
+        # glDrawElements(GL_TRIANGLES, self.model.indices[0].size, GL_UNSIGNED_INT, None)
+        glDrawArrays(GL_TRIANGLES, 0, len(self.model.component))
 
-        if not self.VBO:
-            self.VBO = QOpenGLBuffer(QOpenGLBuffer.Type.VertexBuffer)
-            self.VBO.create()
-        self.VBO.bind()
-        self.VBO.allocate(self.vertices, self.vertices.nbytes)
-
-        if not self.EBO:
-            self.EBO = glGenBuffers(1)
-        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, self.EBO)
-        glBufferData(GL_ELEMENT_ARRAY_BUFFER, self.indices.nbytes, self.indices, GL_STATIC_DRAW)
-
-        self.program.setAttributeBuffer(0, GL_FLOAT, 0, 3, 8 * float_size)
-        self.program.enableAttributeArray(0)
-
-        self.program.setAttributeBuffer(1, GL_FLOAT, 3 * float_size, 3, 8 * float_size)
-        self.program.enableAttributeArray(1)
-
-        self.program.setAttributeBuffer(2, GL_FLOAT, 6 * float_size, 2, 8 * float_size)
-        self.program.enableAttributeArray(2)
-
-
-        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0)
-        glBindBuffer(GL_ARRAY_BUFFER, 0)
-        glBindVertexArray(0)
 
     def mousePressEvent(self, event: QtGui.QMouseEvent):
-        # print(QtCore.Qt.MouseButton.LeftButton)
-        # print(event.button().name)
         if event.button() == QtCore.Qt.MouseButton.LeftButton:
             self.enableRot = True
-            self.last_pos = event.position()
+            self.last_pos = event.globalPosition()
         else:
             self.enableRot = False
 
     def mouseMoveEvent(self, event: QtGui.QMouseEvent):
         if self.enableRot:
-            anglex = -0.001 * (event.position().x() - self.last_pos.x())
-            angley = 0.001 * (event.position().y() - self.last_pos.y())
+            anglex = -0.008 * (event.globalPosition().x() - self.last_pos.x())
+            angley = -0.008 * (event.globalPosition().y() - self.last_pos.y())
 
             self.program.bind()
             temp = pyrr.matrix44.multiply(
@@ -169,7 +134,13 @@ class open_widget(QtOpenGLWidgets.QOpenGLWidget):
                 self.set_model,
                 temp
             )
+            self.last_pos = event.globalPosition()
             self.update()
+
+    def wheelEvent(self, event: QtGui.QWheelEvent):
+        # print(event.angleDelta())
+        self.zoom += event.angleDelta().y() / 1200 * -1
+        self.update()
 
 
 class mainW(QWidget):

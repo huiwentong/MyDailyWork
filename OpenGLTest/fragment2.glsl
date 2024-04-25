@@ -12,6 +12,6 @@ out vec4 FragColor;
 
 void main()
 {
-    FragColor = vec4(texture(uSampler, vTexCoord));
+    FragColor = vec4(texture(uSampler, vTexCoord)) * vec4(vertexColor);
 //    FragColor = vec4(vertexColor);
 }

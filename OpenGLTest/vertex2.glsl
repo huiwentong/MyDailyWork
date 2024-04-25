@@ -11,7 +11,11 @@ out vec2 vTexCoord;
 
 void main()
 {
+
    gl_Position = uMVP * vec4(a_Pos, 1.0f);
+
+
+//   vertexColor = vec4(1.0f, 1.0f, 1.0f, 1.0f);
    vertexColor = vec4(a_Nor, 1.0f);
    vTexCoord = a_Tex;
 }
