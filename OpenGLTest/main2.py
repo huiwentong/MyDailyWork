@@ -104,9 +104,28 @@ class open_widget(QtOpenGLWidgets.QOpenGLWidget):
         set_mvp = pyrr.matrix44.multiply(set_mvp, set_view)
         set_mvp = pyrr.matrix44.multiply(set_mvp, self.set_project)
 
+        # 计算这个是为了避免模型位移和非等比例缩放
+        normal_mode_mat = pyrr.matrix44.inverse(self.set_model) #type: np.ndarray
+        normal_mode_mat = normal_mode_mat.transpose()
+        normal_mode_mat = pyrr.matrix33.create_from_matrix44(normal_mode_mat, dtype=np.float32)
+
+        uM = glGetUniformLocation(self.shaderProgram, "uM")
+        glUniformMatrix3fv(uM, 1, GL_FALSE, normal_mode_mat)
 
         uMVP = glGetUniformLocation(self.shaderProgram, "uMVP")
         glUniformMatrix4fv(uMVP, 1, GL_FALSE, set_mvp)
+
+        lightPosition = glGetUniformLocation(self.shaderProgram, "lightPosition")
+        glUniform3fv(lightPosition, 1, np.array((0, 1, 3), dtype=np.float32))
+
+        lightColor = glGetUniformLocation(self.shaderProgram, "lightColor")
+        glUniform3fv(lightColor, 1, np.array((0.4, 0.3, 1), dtype=np.float32))
+
+        viewPos = glGetUniformLocation(self.shaderProgram, "viewPos")
+        glUniform3fv(viewPos, 1, np.array((0, 0, self.zoom), dtype=np.float32))
+
+
+
 
         self.texture.bind()
         # glDrawElements(GL_TRIANGLES, self.model.indices[0].size, GL_UNSIGNED_INT, None)

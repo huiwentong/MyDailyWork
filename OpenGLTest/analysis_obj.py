@@ -65,14 +65,17 @@ class Model(object):
                             instance.indices[1].append(int(_i.split('/')[1])-1)
                             instance.indices[2].append(int(_i.split('/')[2])-1)
 
-        for vert in instance.indices[0]:
-            # vert += 1
+        for index, vert in enumerate(instance.indices[0]):
             instance.component.append(instance.vertex[vert*3])
             instance.component.append(instance.vertex[vert*3+1])
             instance.component.append(instance.vertex[vert*3+2])
+
+            vert = instance.indices[2][index]
             instance.component.append(instance.normal[vert*3])
             instance.component.append(instance.normal[vert*3+1])
             instance.component.append(instance.normal[vert*3+2])
+
+            vert = instance.indices[1][index]
             instance.component.append(instance.tex_coord[vert*2])
             instance.component.append(instance.tex_coord[vert*2+1])
 
@@ -99,10 +102,6 @@ class Model(object):
         glBindBuffer(GL_ARRAY_BUFFER, VBO_pos)
         glBufferData(GL_ARRAY_BUFFER, self.component.nbytes, self.component, GL_STATIC_DRAW)
 
-        # EBO_pos = glGenBuffers(1)
-        # glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO_pos)
-        # glBufferData(GL_ELEMENT_ARRAY_BUFFER, self.indices[0].nbytes, self.indices[0], GL_STATIC_DRAW)
-
         glEnableVertexAttribArray(0)
         glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, self.component.itemsize * 8, ctypes.c_void_p(0))
 
@@ -114,29 +113,12 @@ class Model(object):
 
         glBindBuffer(GL_ARRAY_BUFFER, 0)
 
+    def draw(self):
+        pass
 
-        # VBO_nor = glGenBuffers(1)
-        # glBindBuffer(GL_ARRAY_BUFFER, VBO_nor)
-        # glBufferData(GL_ARRAY_BUFFER, self.normal.nbytes, self.normal, GL_STATIC_DRAW)
-        #
-        # glEnableVertexAttribArray(1)
-        # glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, self.vertex.itemsize*3, ctypes.c_void_p(0))
-        #
-        # VBO_tex = glGenBuffers(1)
-        # glBindBuffer(GL_ARRAY_BUFFER, VBO_tex)
-        # glBufferData(GL_ARRAY_BUFFER, self.tex_coord.nbytes, self.tex_coord, GL_STATIC_DRAW)
-        #
-        # EBO_tex = glGenBuffers(1)
-        # glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO_tex)
-        # glBufferData(GL_ELEMENT_ARRAY_BUFFER, self.indices[1].nbytes, self.indices[1], GL_STATIC_DRAW)
-        #
-        # glEnableVertexAttribArray(2)
-        # glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, self.vertex.itemsize*2, ctypes.c_void_p(0))
 
 if __name__ == "__main__":
     mod = Model.make_model("test.obj")
 
-    # print(mod.vertex.size/3)
-    # print(mod.normal.size/3)
     print(mod.tex_coord.size/2)
     print(mod.tex_coord)
