@@ -140,7 +140,7 @@ if __name__ == '__main__':
     choice = input()
     print('是否开启无限循环？Y/N')
     loop = str(input())
-    defaulurl = 'https://c7q06o.avlulu574.xyz/video/view/b3bc204e2331b2279b50'
+    defaulurl = ''
     if url == '':
         url = defaulurl
     if choice == 'Y':

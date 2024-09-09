@@ -2,7 +2,7 @@ import requests
 import pprint
 
 if __name__ == "__main__":
-    baseUrl = "https://video.twimg.com//amplify_video/1749658834992566272/pl/avc1/720x1280/mp4a/128000/aXyqmjiZSg3Ec1mS.m3u8?container=cmaf"
+    baseUrl = ""
     session = requests.session()
 
     headers = {
