@@ -6,3 +6,4 @@
 *.exr
 *.mp3
 *.exe
+/%USERPROFILE%.sshknown_hosts
